@@ -9,6 +9,7 @@
  * @since 1.0.0
  */
 
+require_once __DIR__ . '/inc/updater.php';
 require_once __DIR__ . '/inc/options.php';
 require_once __DIR__ . '/inc/customer-special.php';
 require_once __DIR__ . '/inc/ajax-api.functions.php';
