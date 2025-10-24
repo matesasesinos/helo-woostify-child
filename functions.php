@@ -21,7 +21,7 @@ $updateChecker = PucFactory::buildUpdateChecker(
 
 $updateChecker->setBranch('main');
 
-
+// functions and other includes
 require_once __DIR__ . '/inc/options.php';
 require_once __DIR__ . '/inc/customer-special.php';
 require_once __DIR__ . '/inc/ajax-api.functions.php';
@@ -172,7 +172,7 @@ add_action('woocommerce_check_cart_items', function () {
     }
 });
 
-function agregar_alpine_js()
+function add_alpine_js()
 {
     wp_enqueue_script(
         'alpine-js', // Nombre único para el script
@@ -183,10 +183,10 @@ function agregar_alpine_js()
     );
 
     // Agregar defer al script
-    add_filter('script_loader_tag', 'agregar_defer_a_alpine', 10, 2);
+    add_filter('script_loader_tag', 'add_defer_alpine', 10, 2);
 }
 
-function agregar_defer_a_alpine($tag, $handle)
+function add_defer_alpine($tag, $handle)
 {
     if ('alpine-js' === $handle) {
         return str_replace('src', 'defer="defer" src', $tag);
@@ -194,7 +194,7 @@ function agregar_defer_a_alpine($tag, $handle)
     return $tag;
 }
 
-add_action('wp_enqueue_scripts', 'agregar_alpine_js');
+add_action('wp_enqueue_scripts', 'add_alpine_js');
 
 function topbarMarquee()
 { ?>
@@ -213,64 +213,6 @@ function topbarMarquee()
 <?php }
 
 add_action('woostify_template_part_header', 'topbarMarquee', 20);
-
-//Precios sin impuestos
-add_action('wp_footer', 'mostrar_precio_sin_iva_mejorado_despues_de_precio');
-function mostrar_precio_sin_iva_mejorado_despues_de_precio()
-{
-    if (!is_product()) return;
-?>
-    <style>
-        .precio-sin-iva-detalles {
-            font-size: 1em;
-            color: #555;
-            line-height: 1.4;
-        }
-
-        .precio-sin-iva-detalles .label {
-            display: inline-block;
-            min-width: 100px;
-            font-weight: bold;
-        }
-
-        .single_variation {
-            margin-bottom: 0px !important;
-        }
-    </style>
-    <script type="text/javascript">
-        jQuery(function($) {
-            function formatoEuropeo(numero) {
-                return numero.toLocaleString('es-ES', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            }
-            $('form.variations_form').on('found_variation', function(event, variation) {
-                // Remover si ya existe
-                $('.precio-sin-iva-detalles').remove();
-
-                // Cálculos
-                var precioConIva = parseFloat(variation.display_price);
-                var precioSinIva = precioConIva / 1.21;
-                var iva = precioConIva - precioSinIva;
-
-                // Crear HTML
-                var html = '<div class="precio-sin-iva-detalles">' +
-                    '<div><span class="label">Precio sin impuestos: $ </span> ' + formatoEuropeo(precioSinIva) + '</div>';
-
-                setTimeout(function() {
-                    // Insertar después del precio
-                    $('.woocommerce-variation-price').after(html);
-                }, 500);
-            });
-
-            $('form.variations_form').on('hide_variation', function() {
-                $('.precio-sin-iva-detalles').remove();
-            });
-        });
-    </script>
-<?php
-}
 
 // habilitar SVG con sanitización básica
 function cc_mime_types($mimes)
