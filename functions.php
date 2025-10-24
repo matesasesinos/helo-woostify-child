@@ -136,7 +136,7 @@ add_action('admin_init', 'hide_all_admin_notices');
 
 
 //Error por peso
-function verificar_peso_envio()
+function weigth_verify()
 {
     $option = get_option('helo_mw_option', false);
 
@@ -157,7 +157,7 @@ add_action('template_redirect', function () {
     if (!is_checkout())
         return;
 
-    if (!verificar_peso_envio()) {
+    if (!weigth_verify()) {
         wp_redirect(wc_get_cart_url());
         exit;
     }
@@ -166,8 +166,7 @@ add_action('template_redirect', function () {
 add_action('woocommerce_check_cart_items', function () {
     $limite_peso =  get_option('helo_mw_option_weight', '25');
     $error_message = get_option('helo_mw_option_error_message', 'Compra máxima por bulto %skg total, para pesos mayores generar otra compra.');
-    if (!verificar_peso_envio()) {
-
+    if (!weigth_verify()) {
         wc_add_notice(sprintf($error_message, $limite_peso), 'error');
     }
 });
@@ -196,14 +195,17 @@ function add_defer_alpine($tag, $handle)
 
 add_action('wp_enqueue_scripts', 'add_alpine_js');
 
-function topbarMarquee()
+function topbar_marquee()
 { ?>
     <div class="topbar">
         <div class="woostify-container">
-            <div class="topbar-item topbar-left"><?php //echo do_shortcode($topbar_left); 
-                                                    ?></div>
+            <div class="topbar-item topbar-left">
+                <?php //echo do_shortcode($topbar_left); 
+                $top_bar_message = get_option('helo_mw_top_bar_message', 'Envíos a todo el país - 10% de descuento más de 5L - Somos fabricantes - Con tu primera compra, asesoramiento gratuito');
+                ?>
+            </div>
             <div class="topbar-item topbar-center ">
-                <marquee behavior="scroll" scrollamount="4" direction="left"><?php echo get_option('woostify_setting')['topbar_center']; ?></marquee>
+                <marquee behavior="scroll" scrollamount="4" direction="left"><?php echo $top_bar_message; ?></marquee>
 
             </div>
             <div class="topbar-item topbar-right"><?php //echo do_shortcode($topbar_right); 
@@ -212,7 +214,7 @@ function topbarMarquee()
     </div>
 <?php }
 
-add_action('woostify_template_part_header', 'topbarMarquee', 20);
+add_action('woostify_template_part_header', 'topbar_marquee', 20);
 
 // habilitar SVG con sanitización básica
 function cc_mime_types($mimes)

@@ -92,7 +92,8 @@ function helo_mw_weight_callback()
 }
 
 // Callback para mostrar el campo de texto (mensaje de error)
-function helo_mw_error_message_callback() {
+function helo_mw_error_message_callback()
+{
     $error_message = get_option('helo_mw_option_error_message', '');
     echo '<textarea id="helo_mw_option_error_message" name="helo_mw_option_error_message" rows="4" cols="50">' . esc_textarea($error_message) . '</textarea>';
     echo '<p class="description">Introduce el mensaje de error que se mostrará si se supera el límite de peso. Usa <code>%s</code> para incluir el límite de peso en el mensaje.</p>';
@@ -108,4 +109,29 @@ function helo_mw_sanitize_checkbox($input)
 function helo_mw_sanitize_weight($input)
 {
     return is_numeric($input) ? floatval($input) : '';
+}
+
+// agregame una opcion que sea para agrear un texto plano en la pagina de Ajustes > Generales que el titulo sea "Mensaje de Top Bar"
+function helo_mw_top_bar_message_callback()
+{
+    $top_bar_message = get_option('helo_mw_top_bar_message', 'Envíos a todo el país - 10% de descuento más de 5L - Somos fabricantes - Con tu primera compra, asesoramiento gratuito');
+    echo '<textarea id="helo_mw_top_bar_message" name="helo_mw_top_bar_message" rows="4" cols="50">' . esc_textarea($top_bar_message) . '</textarea>';
+    echo '<p class="description">Introduce el mensaje que se mostrará en la parte superior de la página.</p>';
+}
+add_action('admin_init', 'helo_mw_register_top_bar_message_setting');
+function helo_mw_register_top_bar_message_setting()
+{
+    register_setting('general', 'helo_mw_top_bar_message', array(
+        'type' => 'string',
+        'sanitize_callback' => 'sanitize_text_field',
+        'default' => '',
+    ));
+
+    add_settings_field(
+        'helo_mw_top_bar_message', // ID del campo
+        'Mensaje de Top Bar', // Título del campo
+        'helo_mw_top_bar_message_callback', // Callback para mostrar el campo
+        'general', // Página donde se mostrará
+        'default' // Sección a la que pertenece
+    );
 }
