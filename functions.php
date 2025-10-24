@@ -9,7 +9,19 @@
  * @since 1.0.0
  */
 
-require_once __DIR__ . '/inc/updater.php';
+require_once get_stylesheet_directory() . '/inc/plugin-update-checker/plugin-update-checker.php';
+
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$updateChecker = PucFactory::buildUpdateChecker(
+    'https://github.com/matesasesinos/helo-woostify-child.git',
+    __FILE__,
+    'helo-woostify-child'
+);
+
+$updateChecker->setBranch('main');
+
+
 require_once __DIR__ . '/inc/options.php';
 require_once __DIR__ . '/inc/customer-special.php';
 require_once __DIR__ . '/inc/ajax-api.functions.php';
